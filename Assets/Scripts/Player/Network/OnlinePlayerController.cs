@@ -1,37 +1,17 @@
-using MLAPI;
-using MLAPI.Messaging;
-using MLAPI.NetworkVariable;
+using Unity.Netcode;
+
+
 using UnityEngine;
 
 public class OnlinePlayerController : PlayerControllerTPS
 {
     NetworkObject netObj;
 
-    private NetworkVariableVector3 netMove = new NetworkVariableVector3(new NetworkVariableSettings
-    {
-        WritePermission = NetworkVariablePermission.ServerOnly,
-        ReadPermission = NetworkVariablePermission.Everyone
-    });
-    private NetworkVariableQuaternion netTpsLook = new NetworkVariableQuaternion(new NetworkVariableSettings
-    {
-        WritePermission = NetworkVariablePermission.ServerOnly,
-        ReadPermission = NetworkVariablePermission.Everyone
-    });
-    private NetworkVariableVector3 netLook = new NetworkVariableVector3(new NetworkVariableSettings
-    {
-        WritePermission = NetworkVariablePermission.ServerOnly,
-        ReadPermission = NetworkVariablePermission.Everyone
-    });
-    private NetworkVariableBool netJump = new NetworkVariableBool(new NetworkVariableSettings
-    {
-        WritePermission = NetworkVariablePermission.ServerOnly,
-        ReadPermission = NetworkVariablePermission.Everyone
-    });
-    private NetworkVariableBool netDash = new NetworkVariableBool(new NetworkVariableSettings
-    {
-        WritePermission = NetworkVariablePermission.ServerOnly,
-        ReadPermission = NetworkVariablePermission.Everyone
-    });
+    private NetworkVariable<Vector3> netMove = new NetworkVariable<Vector3>(NetworkVariableReadPermission.Everyone);
+    private NetworkVariable<Quaternion> netTpsLook = new NetworkVariable<Quaternion>(NetworkVariableReadPermission.Everyone);
+    private NetworkVariable<Vector3> netLook = new NetworkVariable<Vector3>(NetworkVariableReadPermission.Everyone);
+    private NetworkVariable<bool> netJump = new NetworkVariable<bool>(NetworkVariableReadPermission.Everyone);
+    private NetworkVariable<bool> netDash = new NetworkVariable<bool>(NetworkVariableReadPermission.Everyone);
 
     void Awake()
     {

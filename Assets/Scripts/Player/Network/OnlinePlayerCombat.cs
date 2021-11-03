@@ -1,25 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MLAPI;
-using MLAPI.Messaging;
-using MLAPI.NetworkVariable;
+using Unity.Netcode;
+
+
 
 public class OnlinePlayerCombat : PlayerCombat
 {
     [SerializeField] ParticleSystem bloodParticle;
-
-    public NetworkVariableBool alive = new NetworkVariableBool(new NetworkVariableSettings
-    {
-        WritePermission = NetworkVariablePermission.ServerOnly,
-        ReadPermission = NetworkVariablePermission.Everyone
-    });
-
-    public NetworkVariableBool attacking = new NetworkVariableBool(new NetworkVariableSettings
-    {
-        WritePermission = NetworkVariablePermission.ServerOnly,
-        ReadPermission = NetworkVariablePermission.Everyone
-    });
+    public NetworkVariable<bool> alive = new NetworkVariable<bool>(NetworkVariableReadPermission.Everyone);
+    public NetworkVariable<bool> attacking = new NetworkVariable<bool>(NetworkVariableReadPermission.Everyone);
 
     private void Awake()
     {

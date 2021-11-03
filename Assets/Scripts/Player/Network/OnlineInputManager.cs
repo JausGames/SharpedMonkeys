@@ -1,7 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;using MLAPI;
-using MLAPI.Messaging;
-using MLAPI.NetworkVariable;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class OnlineInputManager : MonoBehaviour

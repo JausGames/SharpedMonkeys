@@ -1,8 +1,8 @@
-using MLAPI;
+
+using Unity.Netcode;
+using Unity.Netcode.Editor;
 using UnityEngine;
 using System.Collections.Generic;
-using MLAPI.Messaging;
-using MLAPI.Connection;
 using System.Text;
 
 public class OnlinePlayerManager : MonoBehaviour
@@ -51,7 +51,9 @@ public class OnlinePlayerManager : MonoBehaviour
     {
         // Hook up password approval check
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
-        NetworkManager.Singleton.StartHost(PlayerManager.GetInstance().GetSpawnPosition()[0], PlayerManager.GetInstance().GetSpawnRotation()[0]);
+        NetworkManager.Singleton.StartHost();
+        //MLAPI
+        //NetworkManager.Singleton.StartHost(PlayerManager.GetInstance().GetSpawnPosition()[0], PlayerManager.GetInstance().GetSpawnRotation()[0]);
     }
 
     public void Client()
@@ -64,12 +66,14 @@ public class OnlinePlayerManager : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsHost)
         {
-            NetworkManager.Singleton.StopHost();
+            //MLAPI
+            //NetworkManager.Singleton.StopHost();
             NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
         }
         else if (NetworkManager.Singleton.IsClient)
         {
-            NetworkManager.Singleton.StopClient();
+            //MLAPI
+            //NetworkManager.Singleton.StopClient();
         }
 
         //passwordEntryUI.SetActive(true);
@@ -91,7 +95,7 @@ public class OnlinePlayerManager : MonoBehaviour
         {
             var list = NetworkManager.Singleton.ConnectedClientsList;
             var listId = new List<ulong>();
-            foreach (MLAPI.Connection.NetworkClient client in list)
+            foreach (Unity.Netcode.NetworkClient client in list)
             {
                 listId.Add(client.ClientId);
             }
@@ -128,7 +132,7 @@ public class OnlinePlayerManager : MonoBehaviour
         }
     }
 
-    private void ApprovalCheck(byte[] connectionData, ulong clientId, MLAPI.NetworkManager.ConnectionApprovedDelegate callback)
+    private void ApprovalCheck(byte[] connectionData, ulong clientId, Unity.Netcode.NetworkManager.ConnectionApprovedDelegate callback)
     {
         //string password = Encoding.ASCII.GetString(connectionData);
 
