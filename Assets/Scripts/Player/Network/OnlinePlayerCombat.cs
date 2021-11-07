@@ -64,7 +64,17 @@ public class OnlinePlayerCombat : PlayerCombat
         }
         if (!canAttack && attackTimer < Time.time) canAttack = true;
     }
-
+    [ServerRpc]
+    void SubmitAttackAnimRequestServerRpc()
+    {
+        animator.Attack();
+        SubmitAttackAnimRequestClientRpc();
+    }
+    [ClientRpc]
+    void SubmitAttackAnimRequestClientRpc()
+    {
+        animator.Attack();
+    }
     public void GetHit(float damage)
     {
             Die();

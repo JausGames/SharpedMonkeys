@@ -17,7 +17,7 @@ public class OnlinePlayerManager : PlayerManager
         {
             StatusLabels();
 
-            //SubmitNewPosition();
+            SubmitNewPosition();
         }
 
         GUILayout.EndArea();
@@ -100,9 +100,9 @@ public class OnlinePlayerManager : PlayerManager
             {
                 listId.Add(client.ClientId);
             }*/
-            NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient networkClient);
-            networkClient.PlayerObject.TryGetComponent<Player>(out Player newPlayer);
-            Debug.Log("HandleClientConnected : team nb = " + ((NetworkManager.Singleton.ConnectedClients.Count + 1) % 2), this);
+            //NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient networkClient);
+            //networkClient.PlayerObject.TryGetComponent<Player>(out Player newPlayer);
+            //Debug.Log("HandleClientConnected : team nb = " + ((NetworkManager.Singleton.ConnectedClients.Count + 1) % 2), this);
 
 
             //PlayerManager.GetInstance().FindPlayers(listId);
@@ -115,13 +115,15 @@ public class OnlinePlayerManager : PlayerManager
     [ServerRpc]
     void SubmitAddPlayerServerRpc(ulong clientId, ServerRpcParams rpcParams = default)
     {
-        AddPlayerClientRpc(clientId);
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient networkClient)) return;
+        if (!networkClient.PlayerObject.TryGetComponent<Player>(out Player newPlayer)) return;
+        AddPlayerClientRpc(newPlayer, clientId);
     }
     [ClientRpc]
-    void AddPlayerClientRpc(ulong clientId)
+    void AddPlayerClientRpc(Player player, ulong clientId)
     {
         if (clientId == NetworkManager.Singleton.LocalClientId) return;
-        OnlinePlayerManager.GetInstance().AddPlayerToList(clientId);
+        AddPlayerToList(player);
     }
     private void HandleClientDisconnect(ulong clientId)
     {
@@ -143,7 +145,7 @@ public class OnlinePlayerManager : PlayerManager
         var pos = NetworkManager.Singleton.ConnectedClients.Count % 4;
 
         Debug.Log("ConnectionApproval, ApprovalCheck : position = " + pos);
-        callback(true, null, approveConnection, OnlinePlayerManager.GetInstance().GetSpawnPosition()[pos], OnlinePlayerManager.GetInstance().GetSpawnRotation()[pos]);
+        callback(true, null, approveConnection, GetSpawnPosition()[pos], GetSpawnRotation()[pos]);
     }
     static void StatusLabels()
     {
@@ -153,6 +155,16 @@ public class OnlinePlayerManager : PlayerManager
         GUILayout.Label("Transport: " +
             NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
         GUILayout.Label("Mode: " + mode);
+    }
+    static void SubmitNewPosition()
+    {
+        if (GUILayout.Button(NetworkManager.Singleton.IsServer ? "Respawn" : "Submit Respawn"))
+        {
+            var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+            var player = playerObject.GetComponent<OnlinePlayer>();
+            player.ResetHealth();
+            OnlinePlayerManager.GetInstance().SpawnPlayer(player);
+        }
     }
 
 }

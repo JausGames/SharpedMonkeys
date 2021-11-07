@@ -1,6 +1,5 @@
 using Unity.Netcode;
-
-
+using Unity.Netcode.Components;
 using UnityEngine;
 
 public class OnlinePlayerController : PlayerControllerTPS
@@ -126,6 +125,23 @@ public class OnlinePlayerController : PlayerControllerTPS
         netLook.Value = netTpsLook.Value * transform.forward;
         float targetLookAngle = Mathf.Atan2(netLook.Value.x, netLook.Value.z) * Mathf.Rad2Deg;
         float lookAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetLookAngle, ref lookSmoothVelocity, lookSmoothTime, maxLookSpeed);
+        if (NetworkManager.Singleton.IsServer)
+        {
+            ChangeRotation(lookAngle);
+        }
+        else
+        {
+            SubmitChangeRotationRequestServerRpc(lookAngle);
+        }
+    }
+
+    [ServerRpc]
+    private void SubmitChangeRotationRequestServerRpc(float lookAngle, ServerRpcParams rpcParams = default)
+    {
+        ChangeRotation(lookAngle);
+    }
+    private void ChangeRotation(float lookAngle)
+    {
         transform.rotation = Quaternion.Euler(0f, lookAngle, 0f);
     }
     protected override void MovePlayer(out float netMoveVectX, out float netMoveVectZ)
@@ -146,8 +162,41 @@ public class OnlinePlayerController : PlayerControllerTPS
             netLook.Value = netMove.Value.normalized * 0.10f;
             float targetAngle = Mathf.Atan2(netMove.Value.x, netMove.Value.z) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime, maxTurnSpeed);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            if (NetworkManager.Singleton.IsServer)
+            {
+                ChangeRotation(angle);
+            }
+            else
+            {
+                SubmitChangeRotationRequestServerRpc(angle);
+            }
         }
+    }
+    protected override void MoveBody(Vector3 speed)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            ChangePosition(speed);
+        }
+        else
+        {
+            SubmitChangePositionRequestServerRpc(speed);
+        }
+    }
+
+    [ServerRpc]
+    private void SubmitChangePositionRequestServerRpc(Vector3 speed, ServerRpcParams rpcParams = default)
+    {
+        //GetComponent<NetworkRigidbody>().HasNetworkObject;
+        if (NetworkManager.Singleton.IsServer)
+        {
+            body.velocity += speed;
+        }
+        ChangePosition(speed);
+    }
+    private void ChangePosition(Vector3 speed)
+    {
+        body.velocity += speed;
     }
     override public void Dash(bool perf, bool canc)
     {
@@ -194,7 +243,8 @@ public class OnlinePlayerController : PlayerControllerTPS
                 Debug.Log("PlayerController, Dash ; vel = " + body.velocity.normalized.x * Vector3.right + body.velocity.normalized.z * Vector3.forward);
                 Debug.Log("PlayerController, dash ; dashForce = " + Force);
                 if (!onFloor) Force = Force * inAirDashRatio;
-                body.velocity += transform.forward * Force + upwardModifier;
+                MoveBody(transform.forward * Force + upwardModifier);
+                netDash.Value = false;
             }
         }
     }

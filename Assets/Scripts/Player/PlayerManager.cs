@@ -125,7 +125,7 @@ public class PlayerManager : MonoBehaviour
         return spawnableList;
     }
 
-    private void SpawnPlayer(int id)
+    protected void SpawnPlayer(int id)
     {
         var availableSpot = new List<int>();
         for(int i = 0; i < positions.Length; i++)
@@ -146,6 +146,28 @@ public class PlayerManager : MonoBehaviour
         alive.Add(players[id]);
         aliveList[id] = true;
         players[id].PlaySpawnAnim();
+    }
+    public void SpawnPlayer(Player player)
+    {
+        var availableSpot = new List<int>();
+        for (int i = 0; i < positions.Length; i++)
+        {
+            if (spawnPosWaitList[i] <= Time.time) availableSpot.Add(i);
+        }
+        player.SetAlive(true);
+        player.ResetHealth();
+        player.StopMotion();
+        var rnd = Random.Range(0, availableSpot.Count - 1);
+        spawnPosWaitList[availableSpot[rnd]] = Time.time + SPAWN_WAIT_TIME;
+        player.transform.localPosition = positions[availableSpot[rnd]];
+        //player.transform.localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        player.transform.localRotation = rotations[availableSpot[rnd]];
+        player.controller.SetCanMove(true);
+        player.combat.SetCanMove(true);
+        player.Revive();
+        alive.Add(player);
+        //aliveList[id] = true;
+        player.PlaySpawnAnim();
     }
     public void SetUIUp()
     {
@@ -252,6 +274,11 @@ public class PlayerManager : MonoBehaviour
         if (!networkClient.PlayerObject.TryGetComponent<Player>(out Player newPlayer)) return;
 
         players.Add(newPlayer);
+    }
+    //Use Offline
+    public void AddPlayerToList(Player player)
+    {
+        players.Add(player);
     }
     public void DeletePlayers()
     {

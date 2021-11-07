@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1347257804920631603}
-  - component: {fileID: 1347257804920631601}
-  - component: {fileID: 1347257804920631600}
+  - component: {fileID: 28021443513959868}
+  - component: {fileID: 7937735026331990518}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -28,11 +28,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1347257804920631601
+--- !u!114 &28021443513959868
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,12 +50,17 @@ MonoBehaviour:
   LogLevel: 1
   NetworkConfig:
     ProtocolVersion: 0
-    NetworkTransport: {fileID: 1347257804920631600}
+    NetworkTransport: {fileID: 7937735026331990518}
     PlayerPrefab: {fileID: 3678103632357136259, guid: e5b077a296b41ba449bd05b1a707efaa, type: 3}
-    NetworkPrefabs: []
+    NetworkPrefabs:
+    - Override: 0
+      Prefab: {fileID: 3678103632357136259, guid: e5b077a296b41ba449bd05b1a707efaa, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 0
+    ConnectionApproval: 1
     ConnectionData: 
     EnableTimeResync: 0
     TimeResyncInterval: 30
@@ -67,7 +73,7 @@ MonoBehaviour:
     LoadSceneTimeOut: 120
     MessageBufferTimeout: 20
     EnableNetworkLogs: 1
---- !u!114 &1347257804920631600
+--- !u!114 &7937735026331990518
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,7 +88,7 @@ MonoBehaviour:
   MessageBufferSize: 5120
   MaxConnections: 100
   MaxSentMessageQueueSize: 128
-  ConnectAddress: 25.69.163.81
+  ConnectAddress: 127.0.0.1
   ConnectPort: 7777
   ServerListenPort: 7777
   MessageSendMode: 0

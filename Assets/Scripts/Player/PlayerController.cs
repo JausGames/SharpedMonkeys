@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private Transform visual;
@@ -232,21 +233,20 @@ public class PlayerController : MonoBehaviour
             wallJumpTimer = Time.time + wallJumpCooldown;
         }
         else if (!wallJumpable && falling)
-        {
             moveVectY = -0.4f;
-        }
         else if (onWallTimer > MAX_WALL_RUN_TIME && falling)
-        {
             moveVectY = -0.15f;
-        }
+        
+
         if (wallJumpable && (moveVectX * Vector3.right + moveVectZ * Vector3.forward).magnitude / speed < 0.2f)
-            body.velocity = body.velocity.y * Vector3.up + body.velocity.x * .95f * Vector3.right + body.velocity.z * .95f * Vector3.forward;
-        body.velocity += moveVectX * Vector3.right + moveVectY * Vector3.up + moveVectZ * Vector3.forward + (moveVectX + moveVectZ) * totalForward.y * Vector3.down;
-        body.velocity += wallDir;
+            MoveBody(-0.05f * body.velocity);
+
+        MoveBody(moveVectX * Vector3.right + moveVectY * Vector3.up + moveVectZ * Vector3.forward + (moveVectX + moveVectZ) * totalForward.y * Vector3.down + wallDir);
+
+        
         if ((wallJumpable && onWallTimer <= MAX_WALL_RUN_TIME) && body.velocity.y < 0f)
-        {
-            body.velocity = body.velocity.x * Vector3.right + body.velocity.z * Vector3.forward;
-        }
+            MoveBody(-body.velocity.y * Vector3.up);
+        
 
 
         if (move.magnitude >= 0.3f)
@@ -277,6 +277,11 @@ public class PlayerController : MonoBehaviour
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime, maxTurnSpeed);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
         }
+    }
+    
+    virtual protected void MoveBody(Vector3 speed)
+    {
+        body.velocity += speed;
     }
 
     virtual public void RotatePlayer()
@@ -343,7 +348,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("PlayerController, Dash ; vel = " + body.velocity.normalized.x * Vector3.right + body.velocity.normalized.z * Vector3.forward);
             Debug.Log("PlayerController, dash ; dashForce = " + Force);
             if (!onFloor) Force = Force * inAirDashRatio;
-            body.velocity += transform.forward * Force + upwardModifier;
+            MoveBody(transform.forward * Force + upwardModifier);
         }
     }
     public void StartFalling()
@@ -369,7 +374,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopMotion()
     {
-        body.velocity = Vector3.zero;
+        MoveBody(-body.velocity);
     }
     public void SetFreeze(bool value)
     {
