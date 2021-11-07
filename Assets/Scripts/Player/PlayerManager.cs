@@ -32,10 +32,14 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        if (onlineTest) SetSpawnPositions(new Vector3[] { Vector3.forward * 3f + Vector3.right * 3f + Vector3.up, 
-                                                            Vector3.forward * 3f - Vector3.right * 3f + Vector3.up, 
-                                                            -Vector3.forward * 3f - Vector3.right * 3f + Vector3.up, 
+        if (onlineTest)
+        {
+            SetSpawnPositions(new Vector3[] { Vector3.forward * 3f + Vector3.right * 3f + Vector3.up,
+                                                            Vector3.forward * 3f - Vector3.right * 3f + Vector3.up,
+                                                            -Vector3.forward * 3f - Vector3.right * 3f + Vector3.up,
                                                             -Vector3.forward * 3f + Vector3.right * 3f + Vector3.up});
+
+        }
     }
     public static PlayerManager GetInstance()
     {

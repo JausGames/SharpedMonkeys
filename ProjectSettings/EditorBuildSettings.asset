@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LocalMaps/WzrdMap.unity
     guid: 3c3b43f8db41d2c439422b073a9c03ea
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LocalMaps/BaseGame.unity
     guid: 2feb948229b273541bb43a269b953824
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Tests/OnlineThirdPerson.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}

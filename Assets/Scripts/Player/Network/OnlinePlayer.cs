@@ -15,4 +15,14 @@ public class OnlinePlayer : Player
             personalCamera.GetComponent<AudioListener>().enabled = true;
         }
     }
+
+    private void Update()
+    {
+        if (body.velocity.magnitude > 1f) Debug.Log("Player, Update : body.velocity.magnitude = " + body.velocity.magnitude);
+        if (transform.position.y < -5 && isAlive)
+        {
+            OnlinePlayerManager.GetInstance().RegisterSuicide(this);
+            Die();
+        }
+    }
 }

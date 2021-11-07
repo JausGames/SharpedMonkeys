@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Color color = Color.white;
     [SerializeField] private float health = 200f;
     [SerializeField] private Sprite picture;
-    [SerializeField] private bool isAlive = true;
+    [SerializeField] protected bool isAlive = true;
     [SerializeField] private bool isSpawnable = true;
 
     [Header("Player componenents")]
@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
         if (body.velocity.magnitude > 1f) Debug.Log("Player, Update : body.velocity.magnitude = " + body.velocity.magnitude);
         if (transform.position.y < -5 && isAlive)
         {
-            PlayerManager.instance.RegisterSuicide(this);
+            PlayerManager.GetInstance().RegisterSuicide(this);
             Die();
         }
     }
@@ -179,7 +179,7 @@ public class Player : MonoBehaviour
 
         animator.enabled = !value;
     }
-    private void Die()
+    protected void Die()
     {
         ActiveRagdoll(true);
         health = 0f;

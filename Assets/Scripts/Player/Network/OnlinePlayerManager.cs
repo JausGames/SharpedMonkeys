@@ -1,11 +1,10 @@
 
 using Unity.Netcode;
-using Unity.Netcode.Editor;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 
-public class OnlinePlayerManager : MonoBehaviour
+public class OnlinePlayerManager : PlayerManager
 {
     void OnGUI()
     {
@@ -51,6 +50,7 @@ public class OnlinePlayerManager : MonoBehaviour
     {
         // Hook up password approval check
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes("put credential here");
         NetworkManager.Singleton.StartHost();
         //MLAPI
         //NetworkManager.Singleton.StartHost(PlayerManager.GetInstance().GetSpawnPosition()[0], PlayerManager.GetInstance().GetSpawnRotation()[0]);
@@ -93,12 +93,13 @@ public class OnlinePlayerManager : MonoBehaviour
         // Are we the client that is connecting?
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
-            var list = NetworkManager.Singleton.ConnectedClientsList;
+            //@BJN can only access ConnectedClientList on SERVER
+            /*var list = NetworkManager.Singleton.ConnectedClientsList;
             var listId = new List<ulong>();
             foreach (Unity.Netcode.NetworkClient client in list)
             {
                 listId.Add(client.ClientId);
-            }
+            }*/
             NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient networkClient);
             networkClient.PlayerObject.TryGetComponent<Player>(out Player newPlayer);
             Debug.Log("HandleClientConnected : team nb = " + ((NetworkManager.Singleton.ConnectedClients.Count + 1) % 2), this);
@@ -120,7 +121,7 @@ public class OnlinePlayerManager : MonoBehaviour
     void AddPlayerClientRpc(ulong clientId)
     {
         if (clientId == NetworkManager.Singleton.LocalClientId) return;
-        PlayerManager.GetInstance().AddPlayerToList(clientId);
+        OnlinePlayerManager.GetInstance().AddPlayerToList(clientId);
     }
     private void HandleClientDisconnect(ulong clientId)
     {
@@ -142,7 +143,7 @@ public class OnlinePlayerManager : MonoBehaviour
         var pos = NetworkManager.Singleton.ConnectedClients.Count % 4;
 
         Debug.Log("ConnectionApproval, ApprovalCheck : position = " + pos);
-        callback(true, null, approveConnection, PlayerManager.GetInstance().GetSpawnPosition()[pos], PlayerManager.GetInstance().GetSpawnRotation()[pos]);
+        callback(true, null, approveConnection, OnlinePlayerManager.GetInstance().GetSpawnPosition()[pos], OnlinePlayerManager.GetInstance().GetSpawnRotation()[pos]);
     }
     static void StatusLabels()
     {
@@ -153,21 +154,6 @@ public class OnlinePlayerManager : MonoBehaviour
             NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
         GUILayout.Label("Mode: " + mode);
     }
-    /*static void SubmitNewPosition()
-    {
-        if (GUILayout.Button(NetworkManager.Singleton.IsServer ? "Move" : "Request Position Change"))
-        {
-            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(NetworkManager.Singleton.LocalClientId,
-                out var networkedClient))
-            {
-                var controller = networkedClient.PlayerObject.GetComponent<PlayerController>();
-                if (controller)
-                {
-                    controller.Move();
-                }
-            }
-        }
-    }*/
 
 }
 

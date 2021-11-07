@@ -37,6 +37,14 @@ namespace Inputs
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""MouseLook"",
+                    ""type"": ""Value"",
+                    ""id"": ""e4f32c22-0a4e-4c9d-b6aa-9464b06a860c"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Attack"",
                     ""type"": ""Button"",
                     ""id"": ""0e99b5e7-0739-4849-850a-dd65c28b54a8"",
@@ -97,7 +105,7 @@ namespace Inputs
                 {
                     ""name"": """",
                     ""id"": ""1c3b05d4-95b0-4260-a5b1-2ba5a40d2f8b"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard & Mouse"",
@@ -368,6 +376,17 @@ namespace Inputs
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""329c873e-dd3e-46c8-9c32-f6f93a49bf1e"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""MouseLook"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -406,6 +425,7 @@ namespace Inputs
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+            m_Player_MouseLook = m_Player.FindAction("MouseLook", throwIfNotFound: true);
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
             m_Player_B = m_Player.FindAction("B", throwIfNotFound: true);
@@ -464,6 +484,7 @@ namespace Inputs
         private IPlayerActions m_PlayerActionsCallbackInterface;
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Look;
+        private readonly InputAction m_Player_MouseLook;
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_Dash;
         private readonly InputAction m_Player_B;
@@ -477,6 +498,7 @@ namespace Inputs
             public PlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
             public InputAction @Move => m_Wrapper.m_Player_Move;
             public InputAction @Look => m_Wrapper.m_Player_Look;
+            public InputAction @MouseLook => m_Wrapper.m_Player_MouseLook;
             public InputAction @Attack => m_Wrapper.m_Player_Attack;
             public InputAction @Dash => m_Wrapper.m_Player_Dash;
             public InputAction @B => m_Wrapper.m_Player_B;
@@ -499,6 +521,9 @@ namespace Inputs
                     @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                     @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                     @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                    @MouseLook.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseLook;
+                    @MouseLook.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseLook;
+                    @MouseLook.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseLook;
                     @Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
                     @Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
                     @Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
@@ -530,6 +555,9 @@ namespace Inputs
                     @Look.started += instance.OnLook;
                     @Look.performed += instance.OnLook;
                     @Look.canceled += instance.OnLook;
+                    @MouseLook.started += instance.OnMouseLook;
+                    @MouseLook.performed += instance.OnMouseLook;
+                    @MouseLook.canceled += instance.OnMouseLook;
                     @Attack.started += instance.OnAttack;
                     @Attack.performed += instance.OnAttack;
                     @Attack.canceled += instance.OnAttack;
@@ -577,6 +605,7 @@ namespace Inputs
         {
             void OnMove(InputAction.CallbackContext context);
             void OnLook(InputAction.CallbackContext context);
+            void OnMouseLook(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
             void OnDash(InputAction.CallbackContext context);
             void OnB(InputAction.CallbackContext context);

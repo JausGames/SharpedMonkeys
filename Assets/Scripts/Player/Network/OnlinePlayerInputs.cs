@@ -21,6 +21,9 @@ public class OnlinePlayerInputs : NetworkBehaviour
         OnlineInputManager.Controls.Player.Look.performed += ctx => SetRotation(ctx.ReadValue<Vector2>());
         OnlineInputManager.Controls.Player.Look.canceled += _ => SetRotation(Vector2.zero);
 
+        OnlineInputManager.Controls.Player.MouseLook.performed += ctx => SetRotation(ctx.ReadValue<Vector2>() * Time.deltaTime);
+        OnlineInputManager.Controls.Player.MouseLook.canceled += _ => SetRotation(Vector2.zero);
+
         //OnlineInputManager.Controls.Player.MouseLook.performed += ctx => SetMouseRotation(ctx.ReadValue<Vector2>());
         //OnlineInputManager.Controls.Player.MouseLook.canceled += _ => SetMouseRotation(Vector2.zero);
 

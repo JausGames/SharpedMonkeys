@@ -22,6 +22,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "MouseLook",
+                    "type": "Value",
+                    "id": "e4f32c22-0a4e-4c9d-b6aa-9464b06a860c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Attack",
                     "type": "Button",
                     "id": "0e99b5e7-0739-4849-850a-dd65c28b54a8",
@@ -82,7 +90,7 @@
                 {
                     "name": "",
                     "id": "1c3b05d4-95b0-4260-a5b1-2ba5a40d2f8b",
-                    "path": "<Keyboard>/e",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard & Mouse",
@@ -351,6 +359,17 @@
                     "processors": "",
                     "groups": "Keyboard & Mouse",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "329c873e-dd3e-46c8-9c32-f6f93a49bf1e",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard & Mouse",
+                    "action": "MouseLook",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
